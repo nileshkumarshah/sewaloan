@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Git Repository') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/nileshkumarshah/sewaloan.git']])
+                echo 'Git repository cloned.'
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+				    sh 'docker build -t jenkinsautomate .'
+                }
+            }
+        }
+        
+        // stage('Push Docker Image to Docker Hub') {
+        //     steps {
+        //         script {
+        //             withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerpwd')]) {
+        //                 if (isUnix()) {
+        //                     sh 'echo $dockerpwd | docker login --username shahnilesh --password-stdin'
+        //                     sh 'docker scan jenkinsautomate'
+        //                     sh 'docker push jenkinsautomate'
+        //                 } 
+        //             }
+        //         }
+        //     }
+        // }
+    }
+}
