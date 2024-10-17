@@ -9,15 +9,15 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     systemd \
     libaio1 && \
-    pip install opencv-python && \
+    pip install opencv-python 
     # Install Oracle DB client Files
-    mkdir -p /opt/oracle && \
-    cd /opt/oracle && \
-    wget https://download.oracle.com/otn_software/linux/instantclient/215000/instantclient-basic-linux.x64-21.5.0.0.0dbru.zip && \
-    unzip instantclient-basic-linux.x64-21.5.0.0.0dbru.zip && \
-    sh -c "echo /opt/oracle/instantclient_21_5 > /etc/ld.so.conf.d/oracle-instantclient.conf" && \
-    ldconfig && \
-    rm -rf /var/lib/apt/lists/* /opt/oracle/instantclient-basic-linux.x64-21.5.0.0.0dbru.zip
+    # mkdir -p /opt/oracle && \
+    # cd /opt/oracle && \
+    # wget https://download.oracle.com/otn_software/linux/instantclient/215000/instantclient-basic-linux.x64-21.5.0.0.0dbru.zip && \
+    # unzip instantclient-basic-linux.x64-21.5.0.0.0dbru.zip && \
+    # sh -c "echo /opt/oracle/instantclient_21_5 > /etc/ld.so.conf.d/oracle-instantclient.conf" && \
+    # ldconfig && \
+    # rm -rf /var/lib/apt/lists/* /opt/oracle/instantclient-basic-linux.x64-21.5.0.0.0dbru.zip
 
 # Set environment variables
 ENV PATH="/opt/oracle/instantclient_21_5:${PATH}"

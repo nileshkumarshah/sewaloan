@@ -1,5 +1,17 @@
 pipeline {
     agent any
+    environment {
+        
+        registry = "shahnilesh/my-first-app" 
+
+        DOCKER_CREDENTIALS_ID = 'dockerhubfirst' 
+
+        dockerImage = '' 
+        
+        DOCKER_CLI_EXPERIMENTAL = "enabled"
+ 
+    }
+    
 
     stages {
         stage('Clone Git Repository') {
@@ -9,26 +21,67 @@ pipeline {
             }
         }
         
-        stage('Build Docker Image') {
+        stage('Set up Buildx') {
             steps {
                 script {
-				    sh 'docker build -t jenkinsautomate .'
+                    sh 'docker buildx create --use'
                 }
             }
         }
         
-        // stage('Push Docker Image to Docker Hub') {
+        stage ('Docker Registry'){
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                        def pythonImage = docker.image('library/python:3.8')
+                        pythonImage.pull() // This ensures the image is pulled using the correct credentials
+                    }
+                }
+            }
+        }
+        
+        
+        stage('Build Docker Image') {
+            steps {
+                
+                script { 
+                    
+                    sh "docker build -f ./Dockerfile -t $registry:$BUILD_NUMBER ."
+                    
+                    echo 'Build Images.'
+                    
+                }
+                
+            }
+        }
+        
+        
+        
+        stage('Push Image') {
+            steps {
+                sh "docker push $registry:$BUILD_NUMBER"
+                echo 'Docker Images push.'
+            }
+        }
+        
+        
+        stage('Cleaning up') { 
+
+            steps { 
+
+                sh "docker rmi $registry:$BUILD_NUMBER" 
+
+            }
+
+        }
+        
+        // stage('Check Files') {
         //     steps {
-        //         script {
-        //             withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerpwd')]) {
-        //                 if (isUnix()) {
-        //                     sh 'echo $dockerpwd | docker login --username shahnilesh --password-stdin'
-        //                     sh 'docker scan jenkinsautomate'
-        //                     sh 'docker push jenkinsautomate'
-        //                 } 
-        //             }
-        //         }
+        //         sh 'ls -al'
         //     }
         // }
+        
     }
+    
+    
 }
