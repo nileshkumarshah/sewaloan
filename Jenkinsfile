@@ -4,7 +4,7 @@ pipeline {
         
         registry = "shahnilesh/my-first-app" 
 
-        DOCKER_CREDENTIALS_ID = 'dockerhubfirst' 
+        DOCKER_CREDENTIALS_ID = 'dockerhubfirst-credentials' 
 
         dockerImage = '' 
         
@@ -44,7 +44,15 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 
-                script { 
+                script {
+                    
+                    sh 'python3.8 --version'
+                    
+                    sh '''
+                        if ! pip --version; then
+                            sudo apt install -y python3-pip
+                        fi
+                        '''
                     
                     sh "docker build -f ./Dockerfile -t $registry:$BUILD_NUMBER ."
                     
@@ -59,7 +67,21 @@ pipeline {
         
         stage('Push Image') {
             steps {
-                sh "docker push $registry:$BUILD_NUMBER"
+                
+                script {
+                 
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
+                        
+                        
+                        sh "docker tag $registry:$BUILD_NUMBER $registry:$BUILD_NUMBER"
+                        
+                        sh "docker push docker.io/$registry:$BUILD_NUMBER"
+                        
+                        
+                    }
+                   
+                }
+                
                 echo 'Docker Images push.'
             }
         }
