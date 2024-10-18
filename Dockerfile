@@ -8,8 +8,8 @@ RUN apt-get update && apt-get install -y \
     nginx \
     supervisor \
     systemd \
-    libaio1 && \
-    pip install opencv-python 
+    libaio1 
+    # pip install opencv-python 
     # Install Oracle DB client Files
     # mkdir -p /opt/oracle && \
     # cd /opt/oracle && \
