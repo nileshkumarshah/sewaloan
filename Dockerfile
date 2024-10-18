@@ -7,8 +7,8 @@ RUN apt-get update && apt-get install -y \
     python3-opencv \
     nginx \
     supervisor \
-    systemd \
-    libaio1 
+    systemd 
+    # libaio1 
     # pip install opencv-python 
     # Install Oracle DB client Files
     # mkdir -p /opt/oracle && \
@@ -20,9 +20,9 @@ RUN apt-get update && apt-get install -y \
     # rm -rf /var/lib/apt/lists/* /opt/oracle/instantclient-basic-linux.x64-21.5.0.0.0dbru.zip
 
 # Set environment variables
-ENV PATH="/opt/oracle/instantclient_21_5:${PATH}"
-ENV LD_LIBRARY_PATH="/opt/oracle/instantclient_21_5:${LD_LIBRARY_PATH}"
-ENV LD_RUN_PATH="${LD_LIBRARY_PATH}"
+# ENV PATH="/opt/oracle/instantclient_21_5:${PATH}"
+# ENV LD_LIBRARY_PATH="/opt/oracle/instantclient_21_5:${LD_LIBRARY_PATH}"
+# ENV LD_RUN_PATH="${LD_LIBRARY_PATH}"
 ENV TZ="Asia/Kolkata"
 
 # Setup python environment
