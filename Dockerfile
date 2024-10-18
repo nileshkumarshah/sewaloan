@@ -1,13 +1,14 @@
 FROM python:3.8
 
-# Update and install prerequisites in one RUN statement
-RUN apt-get update && apt-get install -y \
+# Update, upgrade, and install packages
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     poppler-utils \
     software-properties-common \
     python3-opencv \
     nginx \
     supervisor \
-    systemd 
+    systemd \
+    --no-install-recommends
     # libaio1 
     # pip install opencv-python 
     # Install Oracle DB client Files
@@ -23,6 +24,10 @@ RUN apt-get update && apt-get install -y \
 # ENV PATH="/opt/oracle/instantclient_21_5:${PATH}"
 # ENV LD_LIBRARY_PATH="/opt/oracle/instantclient_21_5:${LD_LIBRARY_PATH}"
 # ENV LD_RUN_PATH="${LD_LIBRARY_PATH}"
+
+# Clean up APT when done
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
 ENV TZ="Asia/Kolkata"
 
 # Setup python environment
