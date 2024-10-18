@@ -1,39 +1,34 @@
 FROM python:3.8
 
-# Update, upgrade, and install packages
-RUN apt-get update && apt-get upgrade -y && apt-get install -y \
-    poppler-utils \
-    software-properties-common \
-    python3-opencv \
-    nginx \
-    supervisor \
-    systemd \
-    --no-install-recommends
-    # libaio1 
-    # pip install opencv-python 
-    # Install Oracle DB client Files
-    # mkdir -p /opt/oracle && \
-    # cd /opt/oracle && \
-    # wget https://download.oracle.com/otn_software/linux/instantclient/215000/instantclient-basic-linux.x64-21.5.0.0.0dbru.zip && \
-    # unzip instantclient-basic-linux.x64-21.5.0.0.0dbru.zip && \
-    # sh -c "echo /opt/oracle/instantclient_21_5 > /etc/ld.so.conf.d/oracle-instantclient.conf" && \
-    # ldconfig && \
-    # rm -rf /var/lib/apt/lists/* /opt/oracle/instantclient-basic-linux.x64-21.5.0.0.0dbru.zip
-
-# Set environment variables
-# ENV PATH="/opt/oracle/instantclient_21_5:${PATH}"
-# ENV LD_LIBRARY_PATH="/opt/oracle/instantclient_21_5:${LD_LIBRARY_PATH}"
-# ENV LD_RUN_PATH="${LD_LIBRARY_PATH}"
-
-# Clean up APT when done
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
+# Set non-interactive frontend to avoid prompts
+ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Asia/Kolkata"
+
+RUN python3 -m venv /opt/venv
+
+# This is wrong!
+RUN . /opt/venv/bin/activate
+
+# Update, upgrade, and install necessary packages
+# RUN apt-get update && apt-get upgrade -y && apt-get install -y \
+#     build-essential \
+#     libopencv-dev \
+#     poppler-utils \
+#     ffmpeg \
+#     software-properties-common \
+#     python3-opencv \
+#     nginx \
+#     supervisor \
+#     --no-install-recommends
+
+RUN apt-get update 
+# Clean up APT cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Setup python environment
 RUN mkdir /code
 WORKDIR /code
-COPY new_requirements.txt .
+COPY new_requirements.txt . 
 RUN pip install -r new_requirements.txt
 
 # Copy project files
@@ -42,5 +37,5 @@ COPY . .
 # Make the script executable
 RUN chmod a+x run.sh
 
-# Default command
+# Default command to run the script
 CMD ["./run.sh"]
